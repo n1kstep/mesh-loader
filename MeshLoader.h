@@ -23,9 +23,9 @@ public:
     void insertNode(Node);
     std::vector<std::vector<Node>> createContainer();
 
-    void printNode(int);
-    void printFE(int);
-    void printBFE(int);
+    void printNode(const Node&);
+    void printFE(const FiniteElement&);
+    void printBFE(const BoundaryFiniteElement&);
 };
 
 #endif
