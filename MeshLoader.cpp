@@ -31,22 +31,23 @@ FiniteElement MeshLoader::getFEbyEdge(int n1, int n2) {
     return *iter;
 }
 
-std::vector<Node> MeshLoader::getBNodesByBoundaryId(int id) {
-    std::vector<BoundaryFiniteElement> res;
-    std::copy_if(bfeVector.begin(), bfeVector.end(), res, [&id] (BoundaryFiniteElement bfe) {
+std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
+    std::vector<BoundaryFiniteElement> bfeById;
+    std::copy_if(bfeVector.begin(), bfeVector.end(), bfeById.begin(), [&id] (const BoundaryFiniteElement& bfe) {
         return bfe.idB == id;
     });
-    std::for_each(res.begin(), res.end(), [&id] (BoundaryFiniteElement bfe) {
-        return std::find_if(bfe.idLst.begin(), bfe.idLst.end(), [&id] (BoundaryFiniteElement bfeNode) {
-            return bfeNode.idB == id;
+    std::vector<Node> res;
+    for (const auto& it : bfeById) {
+        std::for_each(it.idLst.begin(), it.idLst.end(), [it, this, &res] (int id) {
+            res.push_back(nodes[id]);
         });
-    });
+    }
     return res;
 }
 
 std::vector<BoundaryFiniteElement> MeshLoader::getBFEsByBoundaryId(int id) {
     std::vector<BoundaryFiniteElement> res;
-    std::copy_if(bfeVector.begin(), bfeVector.end(), res, [&id] (BoundaryFiniteElement bfe) {
+    std::copy_if(bfeVector.begin(), bfeVector.end(), res.begin(), [&id] (const BoundaryFiniteElement& bfe) {
         return bfe.idB == id;
     });
     return res;

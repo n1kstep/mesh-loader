@@ -23,6 +23,7 @@ void AneuMeshLoader::loadMesh(const std::string& fileName) {
             tmp.idLst.push_back(nodeId);
         }
         tmp.id = i;
+        feVector.push_back(tmp);
     }
     inf >> amount >> dim;
     for (int i = 0; i < amount; ++i) {
@@ -34,5 +35,6 @@ void AneuMeshLoader::loadMesh(const std::string& fileName) {
             tmp.idLst.push_back(nodeId);
         }
         tmp.id = i;
+        bfeVector.push_back(tmp);
     }
 }

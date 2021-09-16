@@ -5,7 +5,8 @@
 
 
 class AneuMeshLoader : MeshLoader {
-    void loadMesh(const std::string& fileName);
+public:
+    void loadMesh(const std::string& fileName) override;
 };
 
 

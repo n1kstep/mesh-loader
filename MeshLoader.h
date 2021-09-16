@@ -9,7 +9,7 @@ protected:
     std::vector<FiniteElement> feVector;
     std::vector<BoundaryFiniteElement> bfeVector;
 public:
-    virtual void loadMesh() = 0;
+    virtual void loadMesh(const std::string&) = 0;
 
     std::vector<Node> getNodes();
     std::vector<FiniteElement> getFE();
@@ -17,7 +17,7 @@ public:
 
     FiniteElement getFEbyId(int, int, int);
     FiniteElement getFEbyEdge(int, int);
-    std::vector<Node> getBNodesByBoundaryId(int);
+    std::vector<Node> getNodesByBoundaryId(int);
     std::vector<FiniteElement> getFEsByAreaId(int);
     std::vector<BoundaryFiniteElement> getBFEsByBoundaryId(int);
     void insertNode(Node);
