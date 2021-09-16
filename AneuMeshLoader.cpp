@@ -1,8 +1,10 @@
 #include "AneuMeshLoader.h"
 #include <fstream>
+#include "iostream"
+#include "algorithm"
 
 
-void AneuMeshLoader::loadMesh(const std::string& fileName) {
+void AneuMeshLoader::loadMesh(const std::string &fileName) {
     std::ifstream inf(fileName);
     int amount, dim;
     inf >> amount >> dim;
@@ -10,7 +12,7 @@ void AneuMeshLoader::loadMesh(const std::string& fileName) {
         Node tmp{};
         inf >> tmp.x1 >> tmp.x2 >> tmp.x3;
         tmp.id = i;
-        tmp.flag = false;
+        tmp.vertex = false;
         nodes.push_back(tmp);
     }
     inf >> amount >> dim;
@@ -37,4 +39,20 @@ void AneuMeshLoader::loadMesh(const std::string& fileName) {
         tmp.id = i;
         bfeVector.push_back(tmp);
     }
+    std::vector<int> allBNodes = getBoundaryNodesId();
+    for (auto &it: nodes) {
+        if (std::find(allBNodes.begin(), allBNodes.end(), it.id) != allBNodes.end()) {
+            it.vertex = true;
+        }
+    }
+}
+
+std::vector<int> AneuMeshLoader::getBoundaryNodesId() {
+    std::vector<int> res;
+    for (const auto &it: bfeVector) {
+        std::for_each(it.idLst.begin(), it.idLst.end(), [&res](int id) {
+            res.push_back(id);
+        });
+    }
+    return res;
 }

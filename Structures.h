@@ -1,5 +1,6 @@
 #ifndef CPP_LAB1_STRUCTURES_H
 #define CPP_LAB1_STRUCTURES_H
+
 #include <vector>
 #include "iostream"
 #include "iomanip"
@@ -9,9 +10,9 @@ class Node {
 public:
     int id;
     double x1, x2, x3;
-    bool flag;
+    bool vertex;
 
-    friend std::ostream& operator<<(std::ostream&, const Node&);
+    friend std::ostream &operator<<(std::ostream &, const Node &);
 };
 
 class FiniteElement {
@@ -20,7 +21,7 @@ public:
     int idM;
     std::vector<int> idLst;
 
-    friend std::ostream& operator<<(std::ostream&, const FiniteElement&);
+    friend std::ostream &operator<<(std::ostream &, const FiniteElement &);
 };
 
 
@@ -30,7 +31,7 @@ public:
     int idB;
     std::vector<int> idLst;
 
-    friend std::ostream& operator<<(std::ostream&, const BoundaryFiniteElement&);
+    friend std::ostream &operator<<(std::ostream &, const BoundaryFiniteElement &);
 };
 
 

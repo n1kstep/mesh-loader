@@ -2,6 +2,7 @@
 #include "algorithm"
 #include "iostream"
 
+
 std::vector<Node> MeshLoader::getNodes() {
     return nodes;
 }
@@ -15,7 +16,7 @@ std::vector<BoundaryFiniteElement> MeshLoader::getBFE() {
 }
 
 FiniteElement MeshLoader::getFEbyId(int n1, int n2, int n3) {
-    auto iter = std::find_if(feVector.begin(), feVector.end(), [&n1, &n2, &n3] (FiniteElement fe) {
+    auto iter = std::find_if(feVector.begin(), feVector.end(), [&n1, &n2, &n3](FiniteElement fe) {
         return (std::find(fe.idLst.begin(), fe.idLst.end(), n1) != fe.idLst.end()) &&
                (std::find(fe.idLst.begin(), fe.idLst.end(), n2) != fe.idLst.end()) &&
                (std::find(fe.idLst.begin(), fe.idLst.end(), n3) != fe.idLst.end());
@@ -24,7 +25,7 @@ FiniteElement MeshLoader::getFEbyId(int n1, int n2, int n3) {
 }
 
 FiniteElement MeshLoader::getFEbyEdge(int n1, int n2) {
-    auto iter = std::find_if(feVector.begin(), feVector.end(), [&n1, &n2] (FiniteElement fe) {
+    auto iter = std::find_if(feVector.begin(), feVector.end(), [&n1, &n2](FiniteElement fe) {
         return (std::find(fe.idLst.begin(), fe.idLst.end(), n1) != fe.idLst.end()) &&
                (std::find(fe.idLst.begin(), fe.idLst.end(), n2) != fe.idLst.end());
     });
@@ -33,12 +34,12 @@ FiniteElement MeshLoader::getFEbyEdge(int n1, int n2) {
 
 std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
     std::vector<BoundaryFiniteElement> bfeById;
-    std::copy_if(bfeVector.begin(), bfeVector.end(), bfeById.begin(), [&id] (const BoundaryFiniteElement& bfe) {
+    std::copy_if(bfeVector.begin(), bfeVector.end(), bfeById.begin(), [&id](const BoundaryFiniteElement &bfe) {
         return bfe.idB == id;
     });
     std::vector<Node> res;
-    for (const auto& it : bfeById) {
-        std::for_each(it.idLst.begin(), it.idLst.end(), [it, this, &res] (int id) {
+    for (const auto &it: bfeById) {
+        std::for_each(it.idLst.begin(), it.idLst.end(), [it, this, &res](int id) {
             res.push_back(nodes[id]);
         });
     }
@@ -47,20 +48,20 @@ std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
 
 std::vector<BoundaryFiniteElement> MeshLoader::getBFEsByBoundaryId(int id) {
     std::vector<BoundaryFiniteElement> res;
-    std::copy_if(bfeVector.begin(), bfeVector.end(), res.begin(), [&id] (const BoundaryFiniteElement& bfe) {
+    std::copy_if(bfeVector.begin(), bfeVector.end(), res.begin(), [&id](const BoundaryFiniteElement &bfe) {
         return bfe.idB == id;
     });
     return res;
 }
 
-void MeshLoader::printNode(const Node& node) {
+void MeshLoader::printNode(const Node &node) {
     std::cout << node;
 }
 
-void MeshLoader::printFE(const FiniteElement& fe) {
+void MeshLoader::printFE(const FiniteElement &fe) {
     std::cout << fe;
 }
 
-void MeshLoader::printBFE(const BoundaryFiniteElement& bfe) {
+void MeshLoader::printBFE(const BoundaryFiniteElement &bfe) {
     std::cout << bfe;
 }
