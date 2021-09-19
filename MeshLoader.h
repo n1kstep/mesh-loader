@@ -7,8 +7,8 @@
 class MeshLoader {
 protected:
     std::vector<Node> nodes;
-    std::vector<FiniteElement> feVector;
-    std::vector<BoundaryFiniteElement> bfeVector;
+    std::vector<FiniteElement> allFEs;
+    std::vector<BoundaryFiniteElement> allBFEs;
 public:
     virtual void loadMesh(const std::string &) = 0;
 
@@ -24,19 +24,21 @@ public:
 
     std::vector<Node> getNodesByBoundaryId(int);
 
-    std::vector<FiniteElement> getFEsByAreaId(int);
+    std::vector<FiniteElement> getFEsByMaterialId(int);
 
     std::vector<BoundaryFiniteElement> getBFEsByBoundaryId(int);
 
-    void insertNode(Node);
+    void insertNode(Node, FiniteElement&, int, int);
+
+    void insertNode(Node, BoundaryFiniteElement&, int, int);
 
     std::vector<std::vector<Node>> createContainer();
 
-    void printNode(const Node &);
+    static void printNode(const Node &);
 
-    void printFE(const FiniteElement &);
+    static void printFE(const FiniteElement &);
 
-    void printBFE(const BoundaryFiniteElement &);
+    static void printBFE(const BoundaryFiniteElement &);
 };
 
 #endif

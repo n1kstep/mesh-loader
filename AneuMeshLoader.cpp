@@ -1,4 +1,5 @@
 #include "AneuMeshLoader.h"
+#include "Exceptions.h"
 #include <fstream>
 #include "iostream"
 #include "algorithm"
@@ -6,8 +7,16 @@
 
 void AneuMeshLoader::loadMesh(const std::string &fileName) {
     std::ifstream inf(fileName);
+    if (!inf) {
+        throw FileNotFoundException();
+    }
+    else {
+        std::cout << "File " << fileName << " was opened successfully!" << std::endl;
+    }
+
     int amount, dim;
     inf >> amount >> dim;
+    nodes.reserve(amount);
     for (int i = 0; i < amount; ++i) {
         Node tmp{};
         inf >> tmp.x1 >> tmp.x2 >> tmp.x3;
@@ -15,7 +24,9 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
         tmp.vertex = false;
         nodes.push_back(tmp);
     }
+
     inf >> amount >> dim;
+    allFEs.reserve(amount);
     for (int i = 0; i < amount; ++i) {
         FiniteElement tmp{};
         int nodeId;
@@ -25,9 +36,11 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
             tmp.idLst.push_back(nodeId);
         }
         tmp.id = i;
-        feVector.push_back(tmp);
+        allFEs.push_back(tmp);
     }
+
     inf >> amount >> dim;
+    allBFEs.reserve(amount);
     for (int i = 0; i < amount; ++i) {
         BoundaryFiniteElement tmp{};
         int nodeId;
@@ -37,7 +50,7 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
             tmp.idLst.push_back(nodeId);
         }
         tmp.id = i;
-        bfeVector.push_back(tmp);
+        allBFEs.push_back(tmp);
     }
     std::vector<int> allBNodes = getBoundaryNodesId();
     for (auto &it: nodes) {
@@ -45,11 +58,14 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
             it.vertex = true;
         }
     }
+    std::cout << "Data was loaded successfully!" << std::endl;
+    inf.close();
+    std::cout << "File was closed successfully!" << std::endl;
 }
 
 std::vector<int> AneuMeshLoader::getBoundaryNodesId() {
     std::vector<int> res;
-    for (const auto &it: bfeVector) {
+    for (const auto &it: allBFEs) {
         std::for_each(it.idLst.begin(), it.idLst.end(), [&res](int id) {
             res.push_back(id);
         });
