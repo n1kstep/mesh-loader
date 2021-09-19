@@ -13,6 +13,8 @@ public:
     bool vertex;
 
     friend std::ostream &operator<<(std::ostream &, const Node &);
+
+    friend std::ostream &operator<<(std::ostream &, const std::vector<Node> &);
 };
 
 class FiniteElement {
@@ -22,6 +24,8 @@ public:
     std::vector<int> idLst;
 
     friend std::ostream &operator<<(std::ostream &, const FiniteElement &);
+
+    friend std::ostream &operator<<(std::ostream &, const std::vector<FiniteElement> &);
 };
 
 
@@ -32,6 +36,8 @@ public:
     std::vector<int> idLst;
 
     friend std::ostream &operator<<(std::ostream &, const BoundaryFiniteElement &);
+
+    friend std::ostream &operator<<(std::ostream &, const std::vector<BoundaryFiniteElement> &);
 };
 
 

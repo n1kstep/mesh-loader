@@ -9,8 +9,7 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
     std::ifstream inf(fileName);
     if (!inf) {
         throw FileNotFoundException();
-    }
-    else {
+    } else {
         std::cout << "File " << fileName << " was opened successfully!" << std::endl;
     }
 

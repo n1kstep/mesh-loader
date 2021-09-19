@@ -14,13 +14,13 @@ public:
 
     std::vector<Node> getNodes();
 
-    std::vector<FiniteElement> getFE();
+    std::vector<FiniteElement> getFEs();
 
-    std::vector<BoundaryFiniteElement> getBFE();
+    std::vector<BoundaryFiniteElement> getBFEs();
 
-    FiniteElement getFEbyId(int, int, int);
+    std::vector<FiniteElement> getFEbyId(int, int, int);
 
-    FiniteElement getFEbyEdge(int, int);
+    std::vector<FiniteElement> getFEbyEdge(int, int);
 
     std::vector<Node> getNodesByBoundaryId(int);
 
@@ -28,9 +28,9 @@ public:
 
     std::vector<BoundaryFiniteElement> getBFEsByBoundaryId(int);
 
-    void insertNode(Node, FiniteElement&, int, int);
+    void insertNode(Node, FiniteElement &, int, int);
 
-    void insertNode(Node, BoundaryFiniteElement&, int, int);
+    void insertNode(Node, BoundaryFiniteElement &, int, int);
 
     std::vector<std::vector<Node>> createContainer();
 

@@ -5,7 +5,7 @@
 #include "string"
 
 
-class AneuMeshLoader : MeshLoader {
+class AneuMeshLoader : public MeshLoader {
 public:
     void loadMesh(const std::string &) override;
 
