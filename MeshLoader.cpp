@@ -39,31 +39,41 @@ std::vector<FiniteElement> MeshLoader::getFEbyEdge(int n1, int n2) {
 }
 
 std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
-    std::vector<BoundaryFiniteElement> bfeById;
-    std::copy_if(allBFEs.begin(), allBFEs.end(), bfeById.begin(), [&id](const BoundaryFiniteElement &bfe) {
-        return bfe.idB == id;
-    });
-    std::vector<Node> res;
-    for (const auto &it: bfeById) {
-        std::for_each(it.idLst.begin(), it.idLst.end(), [it, this, &res](int id) {
-            res.push_back(nodes[id]);
+    std::set<Node> res;
+    auto cur = allBFEs.begin();
+    while (cur != allBFEs.end()) {
+        cur = std::find_if(cur, allBFEs.end(), [id](const BoundaryFiniteElement &bfe) {
+            return bfe.idB == id;
         });
+        if (cur != allBFEs.end()) {
+            for (const auto &it: cur->idLst) {
+                auto nodeById = std::find_if(nodes.begin(), nodes.end(), [it](Node node) {
+                    return node.id == it;
+                });
+                res.insert(*nodeById);
+            }
+            ++cur;
+        }
     }
-    return res;
+    return std::vector<Node>(res.begin(), res.end());
 }
 
 std::vector<FiniteElement> MeshLoader::getFEsByMaterialId(int id) {
     std::vector<FiniteElement> res;
-    std::copy_if(allFEs.begin(), allFEs.end(), res.begin(), [&id](const FiniteElement &fe) {
-        return fe.idM == id;
+    std::for_each(allFEs.begin(), allFEs.end(), [&id, &res](const FiniteElement &fe) {
+        if (fe.idM == id) {
+            res.push_back(fe);
+        }
     });
     return res;
 }
 
 std::vector<BoundaryFiniteElement> MeshLoader::getBFEsByBoundaryId(int id) {
     std::vector<BoundaryFiniteElement> res;
-    std::copy_if(allBFEs.begin(), allBFEs.end(), res.begin(), [&id](const BoundaryFiniteElement &bfe) {
-        return bfe.idB == id;
+    std::for_each(allBFEs.begin(), allBFEs.end(), [&id, &res](const BoundaryFiniteElement &bfe) {
+        if (bfe.idB == id) {
+            res.push_back(bfe);
+        }
     });
     return res;
 }

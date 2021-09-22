@@ -37,7 +37,7 @@ void testMeshLoader(AneuMeshLoader *loader, const std::string &filepath_) {
 
 int main(int argc, char *argv[]) {
     auto *loader = new AneuMeshLoader;
-    std::string path = "/home/nikitast/Downloads/cube.mesh";
+    std::string path = "/home/nikitast/Documents/CLionProjects/cpp-lab1/cube.mesh";
     testMeshLoader(loader, path);
     return 0;
 }

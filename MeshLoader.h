@@ -2,6 +2,7 @@
 #define CPP_LAB1_MESHLOADER_H
 
 #include "Structures.h"
+#include "set"
 
 
 class MeshLoader {

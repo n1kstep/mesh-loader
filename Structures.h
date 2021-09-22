@@ -15,7 +15,12 @@ public:
     friend std::ostream &operator<<(std::ostream &, const Node &);
 
     friend std::ostream &operator<<(std::ostream &, const std::vector<Node> &);
+
+    bool operator<(const Node &) const;
+
+    bool operator==(const Node &) const;
 };
+
 
 class FiniteElement {
 public:
