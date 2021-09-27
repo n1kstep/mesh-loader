@@ -2,10 +2,10 @@
 
 
 std::ostream &operator<<(std::ostream &out, const Node &node) {
-    std::cout << "Node\t" << node.id;
-    std::cout << "\tXYZ\t" << node.x1 << "\t" << node.x2 << "\t" << node.x1;
-    std::cout << "\tVertex:\t" << node.vertex;
-    std::cout << std::endl;
+    out << "Node\t" << node.id;
+    out << "\tXYZ\t" << node.x1 << "\t" << node.x2 << "\t" << node.x1;
+    out << "\tVertex:\t" << node.vertex;
+    out << std::endl;
     return out;
 }
 
@@ -27,13 +27,13 @@ bool Node::operator==(const Node &node) const {
 }
 
 std::ostream &operator<<(std::ostream &out, const FiniteElement &fe) {
-    std::cout << "FE\t" << fe.id;
-    std::cout << "\tMaterial Id\t" << fe.idM;
-    std::cout << "\tNodes Id:\t";
+    out << "FE\t" << fe.id;
+    out << "\tMaterial Id\t" << fe.idM;
+    out << "\tNodes Id:\t";
     for (auto &it: fe.idLst) {
-        std::cout << it << " ";
+        out << it << "\t";
     }
-    std::cout << std::endl;
+    out << std::endl;
     return out;
 }
 
@@ -44,13 +44,13 @@ std::ostream &operator<<(std::ostream &out, const std::vector<FiniteElement> &fe
 }
 
 std::ostream &operator<<(std::ostream &out, const BoundaryFiniteElement &bfe) {
-    std::cout << "FE\t" << bfe.id;
-    std::cout << "\tBoundary Id\t" << bfe.idB;
-    std::cout << "\tNodes Id:\t";
+    out << "FE\t" << bfe.id;
+    out << "\tBoundary Id\t" << bfe.idB;
+    out << "\tNodes Id:\t";
     for (auto &it: bfe.idLst) {
-        std::cout << it << " ";
+        out << it << "\t";
     }
-    std::cout << std::endl;
+    out << std::endl;
     return out;
 }
 

@@ -2,6 +2,10 @@
 #define CPP_LAB1_MESHLOADER_H
 
 #include "Structures.h"
+#include "Exceptions.h"
+#include "algorithm"
+#include "iostream"
+#include "fstream"
 #include "set"
 
 
@@ -12,6 +16,8 @@ protected:
     std::vector<BoundaryFiniteElement> allBFEs;
 public:
     virtual void loadMesh(const std::string &) = 0;
+
+    std::vector<int> getBoundaryNodesId();
 
     std::vector<Node> getNodes();
 

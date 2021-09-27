@@ -1,9 +1,10 @@
 #include "AneuMeshLoader.h"
 #include <algorithm>
+#include "iostream"
 
 
-void testMeshLoader(AneuMeshLoader *loader, const std::string &filepath_) {
-    loader->loadMesh(filepath_);
+void testMeshLoader(AneuMeshLoader *loader, const std::string &filepath) {
+    loader->loadMesh(filepath);
     std::vector<Node> nodes;
     std::vector<FiniteElement> fes;
     std::vector<BoundaryFiniteElement> bfes;
@@ -37,7 +38,7 @@ void testMeshLoader(AneuMeshLoader *loader, const std::string &filepath_) {
 
 int main(int argc, char *argv[]) {
     auto *loader = new AneuMeshLoader;
-    std::string path = "/home/nikitast/Documents/CLionProjects/cpp-lab1/cube.mesh";
-    testMeshLoader(loader, path);
+//    std::string path = "/home/nikitast/Documents/CLionProjects/cpp-lab1/cube.mesh";
+    testMeshLoader(loader, argv[0]);
     return 0;
 }

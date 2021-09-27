@@ -1,8 +1,4 @@
 #include "AneuMeshLoader.h"
-#include "Exceptions.h"
-#include <fstream>
-#include "iostream"
-#include "algorithm"
 
 
 void AneuMeshLoader::loadMesh(const std::string &fileName) {

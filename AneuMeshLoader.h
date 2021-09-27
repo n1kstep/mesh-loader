@@ -2,6 +2,10 @@
 #define CPP_LAB1_ANEUMESHLOADER_H
 
 #include "MeshLoader.h"
+#include "Exceptions.h"
+#include <fstream>
+#include "iostream"
+#include "algorithm"
 #include "string"
 
 
