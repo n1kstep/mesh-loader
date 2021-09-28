@@ -1,76 +1,6 @@
 #include "MeshLoader.h"
 
 
-void MeshLoader::loadMesh(const std::string &fileName) {
-    std::ifstream inf(fileName);
-    if (!inf) {
-        throw FileNotFoundException();
-    } else {
-        std::cout << "File " << fileName << " was opened successfully!" << std::endl;
-    }
-
-    int amount, dim;
-    inf >> amount;
-    nodes.reserve(amount);
-    for (int i = 0; i < amount; ++i) {
-        Node tmp{};
-        inf >> tmp.x1 >> tmp.x2 >> tmp.x3;
-        tmp.id = i;
-        tmp.vertex = false;
-        nodes.push_back(tmp);
-    }
-
-    inf >> amount;
-    dim = 4;
-    allFEs.reserve(amount);
-    for (int i = 0; i < amount; ++i) {
-        FiniteElement tmp{};
-        int nodeId;
-        inf >> tmp.idM;
-        for (int j = 0; j < dim; ++j) {
-            inf >> nodeId;
-            tmp.idLst.push_back(nodeId);
-        }
-        tmp.id = i;
-        allFEs.push_back(tmp);
-    }
-
-    inf >> amount >> dim;
-    dim = 3;
-    allBFEs.reserve(amount);
-    for (int i = 0; i < amount; ++i) {
-        BoundaryFiniteElement tmp{};
-        int nodeId;
-        inf >> tmp.idB;
-        for (int j = 0; j < dim; ++j) {
-            inf >> nodeId;
-            tmp.idLst.push_back(nodeId);
-        }
-        tmp.id = i;
-        allBFEs.push_back(tmp);
-    }
-    std::vector<int> allBNodes = getBoundaryNodesId();
-    for (auto &it: nodes) {
-        if (std::find(allBNodes.begin(), allBNodes.end(), it.id) != allBNodes.end()) {
-            it.vertex = true;
-        }
-    }
-    std::cout << "Data was loaded successfully!" << std::endl;
-    inf.close();
-    std::cout << "File was closed successfully!" << std::endl;
-}
-
-std::vector<int> MeshLoader::getBoundaryNodesId() {
-    std::vector<int> res;
-    for (const auto &it: allBFEs) {
-        std::for_each(it.idLst.begin(), it.idLst.end(), [&res](int id) {
-            res.push_back(id);
-        });
-    }
-    return res;
-}
-
-
 std::vector<Node> MeshLoader::getNodes() {
     return nodes;
 }
@@ -182,7 +112,7 @@ void MeshLoader::insertNode(Node node, BoundaryFiniteElement &fe, int nId1, int 
 
 std::vector<std::vector<Node>> MeshLoader::createContainer() {
     std::vector<std::set<int>> ids(nodes.size() + 1);
-    for (auto& it : allFEs) {
+    for (auto &it: allFEs) {
         for (auto node1: it.idLst) {
             for (auto node2: it.idLst) {
                 ids[node1].insert(node2);
@@ -195,7 +125,7 @@ std::vector<std::vector<Node>> MeshLoader::createContainer() {
     for (int i = 1; i < nodes.size() + 1; ++i) {
         std::vector<Node> tmp;
         tmp.reserve(ids[i].size());
-        for (auto& it_set : ids[i]) {
+        for (auto &it_set: ids[i]) {
             tmp.push_back(nodes[it_set]);
         }
         res[i] = std::move(tmp);

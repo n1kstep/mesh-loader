@@ -17,8 +17,6 @@ protected:
 public:
     virtual void loadMesh(const std::string &) = 0;
 
-    std::vector<int> getBoundaryNodesId();
-
     std::vector<Node> getNodes();
 
     std::vector<FiniteElement> getFEs();
@@ -47,5 +45,6 @@ public:
 
     static void printBFE(const BoundaryFiniteElement &);
 };
+
 
 #endif
