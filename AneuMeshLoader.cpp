@@ -14,7 +14,7 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
     nodes.reserve(amount);
     for (int i = 0; i < amount; ++i) {
         Node tmp{};
-        inf >> tmp.x1 >> tmp.x2 >> tmp.x3;
+        inf >> tmp.coords[0] >> tmp.coords[1] >> tmp.coords[2];
         tmp.id = i;
         tmp.vertex = false;
         nodes.push_back(tmp);
@@ -56,14 +56,4 @@ void AneuMeshLoader::loadMesh(const std::string &fileName) {
     std::cout << "Data was loaded successfully!" << std::endl;
     inf.close();
     std::cout << "File was closed successfully!" << std::endl;
-}
-
-std::vector<int> AneuMeshLoader::getBoundaryNodesId() {
-    std::vector<int> res;
-    for (const auto &it: allBFEs) {
-        std::for_each(it.idLst.begin(), it.idLst.end(), [&res](int id) {
-            res.push_back(id);
-        });
-    }
-    return res;
 }

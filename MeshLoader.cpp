@@ -1,43 +1,45 @@
+#include <unordered_set>
 #include "MeshLoader.h"
+#include "CustomHash.h"
 
 
-std::vector<Node> MeshLoader::getNodes() {
+const std::vector<Node> &MeshLoader::getNodes() {
     return nodes;
 }
 
-std::vector<FiniteElement> MeshLoader::getFEs() {
+const std::vector<FiniteElement> &MeshLoader::getFEs() {
     return allFEs;
 }
 
-std::vector<BoundaryFiniteElement> MeshLoader::getBFEs() {
+const std::vector<BoundaryFiniteElement> &MeshLoader::getBFEs() {
     return allBFEs;
 }
 
-std::vector<FiniteElement> MeshLoader::getFEbyId(int n1, int n2, int n3) {
-    std::vector<FiniteElement> res;
-    std::for_each(allFEs.begin(), allFEs.end(), [&n1, &n2, &n3, &res](FiniteElement fe) {
+std::vector<int> MeshLoader::getFEbyId(int n1, int n2, int n3) {
+    std::vector<int> res;
+    std::for_each(allFEs.begin(), allFEs.end(), [&n1, &n2, &n3, &res](const FiniteElement &fe) {
         if ((std::find(fe.idLst.begin(), fe.idLst.end(), n1) != fe.idLst.end()) &&
             (std::find(fe.idLst.begin(), fe.idLst.end(), n2) != fe.idLst.end()) &&
             (std::find(fe.idLst.begin(), fe.idLst.end(), n3) != fe.idLst.end())) {
-            res.push_back(fe);
+            res.push_back(fe.id);
         }
     });
     return res;
 }
 
-std::vector<FiniteElement> MeshLoader::getFEbyEdge(int n1, int n2) {
-    std::vector<FiniteElement> res;
-    std::for_each(allFEs.begin(), allFEs.end(), [&n1, &n2, &res](FiniteElement fe) {
+std::vector<int> MeshLoader::getFEbyEdge(int n1, int n2) {
+    std::vector<int> res;
+    std::for_each(allFEs.begin(), allFEs.end(), [&n1, &n2, &res](const FiniteElement &fe) {
         if ((std::find(fe.idLst.begin(), fe.idLst.end(), n1) != fe.idLst.end()) &&
             (std::find(fe.idLst.begin(), fe.idLst.end(), n2) != fe.idLst.end())) {
-            res.push_back(fe);
+            res.push_back(fe.id);
         }
     });
     return res;
 }
 
-std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
-    std::set<Node> res;
+std::vector<int> MeshLoader::getNodesByBoundaryId(int id) {
+    std::set<int> res;
     auto cur = allBFEs.begin();
     while (cur != allBFEs.end()) {
         cur = std::find_if(cur, allBFEs.end(), [id](const BoundaryFiniteElement &bfe) {
@@ -45,32 +47,33 @@ std::vector<Node> MeshLoader::getNodesByBoundaryId(int id) {
         });
         if (cur != allBFEs.end()) {
             for (const auto &it: cur->idLst) {
-                auto nodeById = std::find_if(nodes.begin(), nodes.end(), [it](Node node) {
-                    return node.id == it;
-                });
-                res.insert(*nodeById);
+                auto nodeById = std::find_if(nodes.begin(), nodes.end(),
+                                             [it](const Node &node) {
+                                                 return node.id == it;
+                                             });
+                res.insert(nodeById->id);
             }
             ++cur;
         }
     }
-    return std::vector<Node>(res.begin(), res.end());
+    return std::vector<int>(res.begin(), res.end());
 }
 
-std::vector<FiniteElement> MeshLoader::getFEsByMaterialId(int id) {
-    std::vector<FiniteElement> res;
+std::vector<int> MeshLoader::getFEsByMaterialId(int id) {
+    std::vector<int> res;
     std::for_each(allFEs.begin(), allFEs.end(), [&id, &res](const FiniteElement &fe) {
         if (fe.idM == id) {
-            res.push_back(fe);
+            res.push_back(fe.id);
         }
     });
     return res;
 }
 
-std::vector<BoundaryFiniteElement> MeshLoader::getBFEsByBoundaryId(int id) {
-    std::vector<BoundaryFiniteElement> res;
+std::vector<int> MeshLoader::getBFEsByBoundaryId(int id) {
+    std::vector<int> res;
     std::for_each(allBFEs.begin(), allBFEs.end(), [&id, &res](const BoundaryFiniteElement &bfe) {
         if (bfe.idB == id) {
-            res.push_back(bfe);
+            res.push_back(bfe.id);
         }
     });
     return res;
@@ -88,47 +91,76 @@ void MeshLoader::printBFE(const BoundaryFiniteElement &bfe) {
     std::cout << bfe;
 }
 
-void MeshLoader::insertNode(Node node, FiniteElement &fe, int nId1, int nId2) {
-    node.id = nodes.size();
-    node.x1 = (nodes[nId1].x1 + nodes[nId2].x1) / 2;
-    node.x2 = (nodes[nId1].x2 + nodes[nId2].x2) / 2;
-    node.x3 = (nodes[nId1].x3 + nodes[nId2].x3) / 2;
-
-    nodes.push_back(node);
-    fe.idLst.push_back(node.id);
-    nodes.push_back(node);
-}
-
-void MeshLoader::insertNode(Node node, BoundaryFiniteElement &fe, int nId1, int nId2) {
-    node.id = nodes.size();
-    node.x1 = (nodes[nId1].x1 + nodes[nId2].x1) / 2;
-    node.x2 = (nodes[nId1].x2 + nodes[nId2].x2) / 2;
-    node.x3 = (nodes[nId1].x3 + nodes[nId2].x3) / 2;
-
-    nodes.push_back(node);
-    fe.idLst.push_back(node.id);
-    nodes.push_back(node);
-}
-
-std::vector<std::vector<Node>> MeshLoader::createContainer() {
-    std::vector<std::set<int>> ids(nodes.size() + 1);
-    for (auto &it: allFEs) {
-        for (auto node1: it.idLst) {
-            for (auto node2: it.idLst) {
-                ids[node1].insert(node2);
+void MeshLoader::insertNodeMid() {
+    std::unordered_set<Edge, hash> edges;
+    for (auto &elem: allFEs) {
+        std::vector<int> feNodesId = elem.idLst;
+        for (int first = 0; first < 4; ++first) {
+            for (auto sec = first + 1; sec < 4; ++sec) {
+                Edge curEdge(feNodesId[first], feNodesId[sec]);
+                if (edges.insert(curEdge).second) {
+                    Node newNode = getMidNode(curEdge);
+                    curEdge.updMid(newNode.id);
+                    nodes.push_back(newNode);
+                    elem.idLst.push_back(newNode.id);
+                } else {
+                    elem.idLst.push_back(curEdge.midNode);
+                }
             }
-            ids[node1].erase(node1);
         }
     }
-
-    std::vector<std::vector<Node>> res(nodes.size() + 1);
-    for (int i = 1; i < nodes.size() + 1; ++i) {
-        std::vector<Node> tmp;
-        tmp.reserve(ids[i].size());
-        for (auto &it_set: ids[i]) {
-            tmp.push_back(nodes[it_set]);
+    for (auto &el: allBFEs) {
+        std::vector<int> bfeNodesId = el.idLst;
+        for (auto first = 0; first < 3; ++first) {
+            for (auto sec = first + 1; sec < 3; ++sec) {
+                auto curEdgeIter = edges.find({bfeNodesId[first], bfeNodesId[sec]});
+                if (curEdgeIter == edges.end()) {
+                    curEdgeIter = edges.find({bfeNodesId[sec], bfeNodesId[first]});
+                }
+                el.idLst.push_back(curEdgeIter->midNode);
+            }
         }
-        res[i] = std::move(tmp);
+    }
+}
+
+
+std::array<double, 3> MeshLoader::getMidEdge(const Edge &edge) {
+    double midX = ((nodes.at(edge.edgeNodes.first - 1).coords.at(0)) +
+                   (nodes.at(edge.edgeNodes.second - 1).coords.at(0))) / 2;
+    double midY = ((nodes.at(edge.edgeNodes.first - 1).coords.at(1)) +
+                   (nodes.at(edge.edgeNodes.second - 1).coords.at(1))) / 2;
+    double midZ = ((nodes.at(edge.edgeNodes.first - 1).coords.at(2)) +
+                   (nodes.at(edge.edgeNodes.second - 1).coords.at(2))) / 2;
+    return {midX, midY, midZ};
+}
+
+Node MeshLoader::getMidNode(const Edge &edge) {
+    Node newNode(nodes.size() + 1, getMidEdge(edge), false);
+    return newNode;
+}
+
+std::array<double, 3> MeshLoader::getNodeCoords(int id) {
+    return nodes.at(id).coords;
+}
+
+std::vector<std::set<int>> MeshLoader::createNeighborsVector() {
+    std::vector<std::set<int>> neighbors(nodes.size() + 1);
+    for (const auto &elem: allBFEs) {
+        for (auto nodeId: elem.idLst)
+            for (auto anthNodeId: elem.idLst)
+                if (nodeId != anthNodeId)
+                    neighbors[nodeId].insert(anthNodeId);
+    }
+
+    return neighbors;
+}
+
+std::vector<int> MeshLoader::getBoundaryNodesId() {
+    std::vector<int> res;
+    for (const auto &it: allBFEs) {
+        std::for_each(it.idLst.begin(), it.idLst.end(), [&res](int id) {
+            res.push_back(id);
+        });
     }
     return res;
 }

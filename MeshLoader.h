@@ -17,34 +17,43 @@ protected:
 public:
     virtual void loadMesh(const std::string &) = 0;
 
-    std::vector<Node> getNodes();
+    virtual ~MeshLoader() = default;
 
-    std::vector<FiniteElement> getFEs();
+    const std::vector<Node> &getNodes();
 
-    std::vector<BoundaryFiniteElement> getBFEs();
+    const std::vector<FiniteElement> &getFEs();
 
-    std::vector<FiniteElement> getFEbyId(int, int, int);
+    const std::vector<BoundaryFiniteElement> &getBFEs();
 
-    std::vector<FiniteElement> getFEbyEdge(int, int);
+    std::vector<int> getFEbyId(int, int, int);
 
-    std::vector<Node> getNodesByBoundaryId(int);
+    std::vector<int> getFEbyEdge(int, int);
 
-    std::vector<FiniteElement> getFEsByMaterialId(int);
+    std::vector<int> getNodesByBoundaryId(int);
 
-    std::vector<BoundaryFiniteElement> getBFEsByBoundaryId(int);
+    std::vector<int> getFEsByMaterialId(int);
 
-    void insertNode(Node, FiniteElement &, int, int);
+    std::vector<int> getBFEsByBoundaryId(int);
 
-    void insertNode(Node, BoundaryFiniteElement &, int, int);
+    void insertNodeMid();
 
-    std::vector<std::vector<Node>> createContainer();
+    std::vector<std::set<int>> createNeighborsVector();
 
     static void printNode(const Node &);
 
     static void printFE(const FiniteElement &);
 
     static void printBFE(const BoundaryFiniteElement &);
-};
 
+    std::vector<int> getBoundaryNodesId();
+
+private:
+    Node getMidNode(const Edge &);
+
+    std::array<double, Node::dim> getMidEdge(const Edge &);
+
+    std::array<double, Node::dim> getNodeCoords(int);
+
+};
 
 #endif

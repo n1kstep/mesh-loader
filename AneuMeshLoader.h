@@ -12,8 +12,6 @@
 class AneuMeshLoader : public MeshLoader {
 public:
     void loadMesh(const std::string &) override;
-
-    std::vector<int> getBoundaryNodesId();
 };
 
 
